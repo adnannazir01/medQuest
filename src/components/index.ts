@@ -31,3 +31,10 @@ export {default as AppHeader} from './common/AppHeader';
 export {default as AppModal} from './modals/AppModal';
 export {default as AlertChoiceModal} from './modals/AlertChoiceModal';
 export {default as DatePickerModal} from './modals/DatePickerModal';
+
+
+/*
+** new Components
+*/
+export {default as AppCard} from './common/AppCard'
+export {default as SmallButton} from './common/SmallButton'

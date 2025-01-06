@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import styles from './style';
 import {AppButton} from '../../components';
 import {useAppStore} from '../../store';
-import {signOut} from '../../store/authSlice/authApiService';
+import {signOut} from 'aws-amplify/auth';
 
 const ProfileScreen = () => {
   /*
@@ -21,7 +21,11 @@ const ProfileScreen = () => {
   const userSignOut = async () => {
     try {
       setLoading(true);
-      await signOut(userData?.PK as string, userTokens.accessToken);
+      await signOut();
+
+      // Clear the user data in your store so RootNavigator loads AuthStack
+      useAppStore.setState({userData: null});
+
       setLoading(false);
     } catch (error) {
       console.log('🚀 ~ signOut ~ error:', error);

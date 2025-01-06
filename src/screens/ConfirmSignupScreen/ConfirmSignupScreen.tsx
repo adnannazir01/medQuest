@@ -9,7 +9,9 @@ import {ZodError} from 'zod';
 import {confirmationCodeValidation} from '../../utils/SchemaValidation';
 import {CustomTheme, STYLES} from '../../theme';
 import {confirmSignup, resendConfirmationCode} from '../../store/authSlice/authApiService';
-import { normalizeFont } from '../../theme/size';
+import {normalizeFont} from '../../theme/size';
+import {useAppNavigation} from '../../hooks/useAppNavigation';
+import {confirmSignUp, ConfirmSignUpInput, getCurrentUser, resendSignUpCode, signIn} from 'aws-amplify/auth';
 
 export default function ConfirmSignupScreen(): JSX.Element {
   /*
@@ -19,7 +21,7 @@ export default function ConfirmSignupScreen(): JSX.Element {
   /*
    ** Routing params
    */
-  const {email, password} = route.params;
+  const {email, resetPassword = false, password} = route.params;
   /*
    ** States
    */
@@ -31,6 +33,7 @@ export default function ConfirmSignupScreen(): JSX.Element {
    ** Hooks
    */
   const {colors} = useTheme() as CustomTheme;
+  const navigation = useAppNavigation();
   /*
    ** Functions
    */
@@ -39,29 +42,71 @@ export default function ConfirmSignupScreen(): JSX.Element {
    ** when submit code is pressed
    */
   const submitCodePressed = () => {
-    try {
-      const params = {
+    console.log('Code ', confirmationCode, 'email ', email, 'password ', password);
+
+    if (!confirmationCode) {
+      Toast.show(`Code required`, Toast.LONG);
+      return;
+    }
+    console.log('here4');
+    if (resetPassword) {
+      console.log('HERE');
+
+      navigation.navigate('ForgotChangePassScreen', {
         email,
         confirmationCode,
-        password,
-      };
-      // api call
-      console.log('params is', params);
-      const data = confirmationCodeValidation.parse({confirmationCode});
-      setLoading(true);
-      confirmSignup(params.email, params.confirmationCode, params.password);
-      setLoading(false);
+      });
+    } else {
+      console.log('all good');
 
-      console.log('🚀 ~ submitCodePressed ~ data:', data);
+      handleSignUpConfirmation({username: email, confirmationCode: confirmationCode});
+    }
+    console.log('end');
+  };
+
+  async function handleSignUpConfirmation({username, confirmationCode}: ConfirmSignUpInput) {
+    setLoading(true);
+    try {
+      const {isSignUpComplete} = await confirmSignUp({
+        username,
+        confirmationCode,
+      });
+
+      const {isSignedIn} = await signIn({username, password});
+
+      console.log('isSignedIn', isSignedIn, isSignUpComplete);
+
+      if (isSignUpComplete && isSignedIn) {
+        navigation.navigate('LoginScreen');
+
+        // createUser(
+        //   {email: username, cognitoId: userId},
+        //   {
+        //     onSuccess: res => {
+        //       console.debug('🚀 ~ file: OTPScreen.tsx:78 ~ handleSignUpConfirmation ~ res:', res);
+        //       setUserID(userId);
+        //       setLoading(false);
+        //     },
+        //     onError: error => {
+        //       setLoading(false);
+        //       console.log('error creating user', error);
+        //     },
+        //   },
+        // );
+      }
+
+      setLoading(false);
     } catch (error) {
       setLoading(false);
-
-      if (error instanceof ZodError) {
-        Toast.show(error?.issues[0]?.message, Toast.LONG);
+      console.log('error confirming sign up', error);
+      console.log('error confirming sign up', error.name);
+      if (error.name === 'CodeMismatchException') {
+        return Toast.show(`Incorrect OTP provided`, Toast.LONG);
+      } else if (error?.message === 'A network error has occurred.') {
+        return Toast.show(`No internet connection`, Toast.LONG);
       }
-      console.log('🚀 ~ submitCodePressed ~ error:', error);
     }
-  };
+  }
   /*
    ** When resend code is pressed
    */
@@ -69,11 +114,32 @@ export default function ConfirmSignupScreen(): JSX.Element {
     setResendCode(false);
     try {
       setLoading(true);
-      await resendConfirmationCode(email);
+      const resendingCode = await resendSignUpCode({
+        username: email,
+
+        options: {
+          userAttributes: {
+            email,
+          },
+          autoSignIn: true,
+        },
+      });
+
+      console.log('resending code', resendCode);
+      console.log('check 1');
+
+      if (resendingCode) {
+        return Toast.show(`Code resent`, Toast.LONG);
+      }
+      // if (userId) {
+      //   console.log('check 2');
+      //   setLoading(false);
+      //   // navigation.navigate('OTPScreen', params);
+      // }
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      console.log('🚀 ~ onPressResendCode ~ error:', error);
+      return Toast.show(`An error occured`, error.message);
     }
   };
   /*
@@ -102,15 +168,32 @@ export default function ConfirmSignupScreen(): JSX.Element {
       <BackButton />
       <AuthHeader text1={'verificationTitle'} text2={'verificationSentCode'} />
       <OTPFieldInput textLable={'confirmationCode'} onChangeText={setConfirmationCode} />
-      <AppButton title={'submit'} onPress={submitCodePressed} btnStyle={{ backgroundColor: colors.primary1 }} textStyle={{ color: colors.inputColor }} loading={loading} />
+      <AppButton
+        title={'submit'}
+        onPress={submitCodePressed}
+        btnStyle={{backgroundColor: colors.primary1}}
+        textStyle={{color: colors.inputColor}}
+        loading={loading}
+      />
       <View style={styles.resendCodeViewstyle}>
         {resendCode ? (
           // <AppText presetStyle={'formLabel'} onPress={onPressResendCode} transText={'didRecvCode'} />
-             <View style={[STYLES.rowCenter, STYLES.JCCenter]}>
-                  <AppText transText={'Didn’t received password?'} style={{ color: colors.Ebony, marginRight: 5, fontSize: normalizeFont(16), fontWeight: '400' }} />
-                  <AppText transText={'Resend Code'} onPress={onPressResendCode} style={{ color: colors.SeaBuckthorn, fontSize: normalizeFont(16), fontWeight: '700', textDecorationLine: 'underline' }} />
-          
-                </View>
+          <View style={[STYLES.rowCenter, STYLES.JCCenter]}>
+            <AppText
+              transText={'Didn’t received password?'}
+              style={{color: colors.Ebony, marginRight: 5, fontSize: normalizeFont(16), fontWeight: '400'}}
+            />
+            <AppText
+              transText={'Resend Code'}
+              onPress={onPressResendCode}
+              style={{
+                color: colors.SeaBuckthorn,
+                fontSize: normalizeFont(16),
+                fontWeight: '700',
+                textDecorationLine: 'underline',
+              }}
+            />
+          </View>
         ) : (
           <AppText presetStyle={'formLabel'} textColor={colors.textDim}>{`Wait for 00:${countDown}`}</AppText>
         )}

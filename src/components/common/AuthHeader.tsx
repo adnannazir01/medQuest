@@ -1,4 +1,4 @@
-import {StyleSheet, View, ViewStyle} from 'react-native';
+import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import React from 'react';
 import {TxKeyPath} from '../../i18n/types';
 import AppText from './AppText';
@@ -9,15 +9,16 @@ import { normalizeFont, pixelSizeX, pixelSizeY } from '../../theme/size';
 interface authHeaderType {
   text1: TxKeyPath;
   text2?: TxKeyPath;
-  viewStyle?: ViewStyle;
-  upperTextStyle?: ViewStyle;
+  viewStyle?: StyleProp<ViewStyle>;
+  upperTextStyle?: StyleProp<ViewStyle>;
+  lowerTextStyle?: StyleProp<ViewStyle>;
 }
 
 export default function AuthHeader(props: authHeaderType): JSX.Element {
   /*
    ** Props
    */
-  const {text1, text2, viewStyle = {}, upperTextStyle = {}} = props;
+  const {text1, text2, viewStyle = {}, upperTextStyle = {}, lowerTextStyle ={}} = props;
   /*
    ** Hooks
    */
@@ -25,13 +26,13 @@ export default function AuthHeader(props: authHeaderType): JSX.Element {
 
   return (
     <View style={[styles.mainView, viewStyle]}>
-      <AppText presetStyle={'heading'} transText={text1} style={[upperTextStyle, {fontSize: normalizeFont(40), lineHeight: 50, color
+      <AppText presetStyle={'heading'} transText={text1} style={[ {fontSize: normalizeFont(40), lineHeight: 50, color
         : colors.Ebony
-      }]} />
+      },upperTextStyle]} />
       <AppText
         presetStyle={'headingDescription'}
         transText={text2}
-        style={styles.lowerTextStyle}
+        style={[styles.lowerTextStyle, lowerTextStyle]}
         textColor={colors.textDim}
       />
     </View>

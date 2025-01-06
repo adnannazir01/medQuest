@@ -11,7 +11,7 @@ const Tab = createBottomTabNavigator<BottomTabNavigatorParamList>();
 
 // function for tab bar icon redering
 const TabBarIconFunc = ({color, size, item, focused}: tabBarIconType) => {
-  return <item.tabBarIcon {...(focused && {fill:color})}  width={size} heigth={size} />;
+  return <item.tabBarIcon fill={color} stroke={color}  width={size} heigth={size} />;
 };
 
 const BottomTab = (): JSX.Element => {

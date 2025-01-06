@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-flashcognito-dev-06d20-authRole",
+      "UnauthRoleArn": "arn:aws:iam::495599779567:role/amplify-flashcognito-dev-06d20-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::495599779567:role/amplify-flashcognito-dev-06d20-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-flashcognito-dev-06d20-deployment",
+      "UnauthRoleName": "amplify-flashcognito-dev-06d20-unauthRole",
+      "StackName": "amplify-flashcognito-dev-06d20",
+      "StackId": "arn:aws:cloudformation:us-east-1:495599779567:stack/amplify-flashcognito-dev-06d20/b2478b90-c88a-11ef-b846-0affc378b5f9",
+      "AmplifyAppId": "d2io2llphol60j"
+    },
+    "categories": {
+      "auth": {
+        "flashcognito83ad050f": {}
+      }
+    }
+  }
+}

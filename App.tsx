@@ -12,6 +12,11 @@ import AppNavigator from './src/routes';
 import Config from './src/config';
 import {getLocales} from 'react-native-localize';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { STYLES } from './src/theme';
+import {
+  BottomSheetModalProvider,
+} from '@gorhom/bottom-sheet';
 
 /**
  * declearing interface to avoid typescript error for text
@@ -61,9 +66,14 @@ function App(): React.JSX.Element {
    */
   return (
     <ErrorBoundary catchErrors={Config.catchErrors} onReset={() => setRecoveredFromError(true)}>
+    <GestureHandlerRootView style={STYLES.flex1}>
+    {/* <BottomSheetModalProvider> */}
+
       <QueryClientProvider client={queryClient}>
         <AppNavigator />
       </QueryClientProvider>
+      {/* </BottomSheetModalProvider> */}
+      </GestureHandlerRootView>
     </ErrorBoundary>
   );
 }

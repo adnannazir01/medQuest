@@ -111,6 +111,12 @@ export const DEFAULT_COLORS = {
   Nevada: '#5C6970',
   SeaBuckthorn: '#F78D26',
   palette: defaultPalette,
+  greyShade: '#B7B8B9',
+  peach: '#FFD8B0',
+  darkBrown: '#C66E1D',
+  white: '#fff',
+  lightBlue: '#3396F8',
+
   /*
    ** Primary color user in app
    */
@@ -210,6 +216,12 @@ export const DARK_COLORS = {
   Nevada: '#5C6970',
   SeaBuckthorn: '#F78D26',
   palette: darkPalette,
+  greyShade: '#B7B8B9',
+  peach: '#FFD8B0',
+  darkBrown: '#C66E1D',
+  white: '#fff',
+  lightBlue: '#3396F8',
+
   /*
    ** Primary color user in app
    */
@@ -387,6 +399,8 @@ export interface IStyle {
   opacity: any;
   zIndex: any;
   display: any;
+  fontWeight:any
+
 }
 
 
@@ -428,6 +442,7 @@ export const STYLES = StyleSheet.create<IStyle>({
   flexGrow: (flexGrow: number) => ({flexGrow}),
   flexWrap: (wrap: string) => ({flexWrap: wrap}),
   fontFamily: (family: string) => ({fontFamily: family}),
+  fontWeight: (fontWeight: string) => ({fontWeight}),
   fontSize: (fontSize: number) => ({fontSize}),
   fontStyle: (style: string) => ({fontStyle: style}),
   fullWidth: {width: '100%'},

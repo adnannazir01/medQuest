@@ -10,4 +10,5 @@ export {default as ProfileScreen} from './ProfileScreen/ProfileScreen';
 export {default as SignupScreen} from './SignupScreen/SignupScreen';
 export {default as ConfirmSignupScreen} from './ConfirmSignupScreen/ConfirmSignupScreen';
 export {default as SettingScreen} from './SettingScreen/SettingScreen';
+export {default as CustomizeStudyScreen} from './CustomizeStudyScreen/CustomizeStudyScreen';
 // export {ErrorBoundary} from './ErrorBoundaryScreen/ErrorBoundary';

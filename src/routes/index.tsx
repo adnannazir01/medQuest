@@ -112,6 +112,11 @@ const RootNavigator = (): JSX.Element => {
         component={userData ? HomeStackScreens : AuthStackScreens}
         options={{headerShown: false}}
       />
+      {/* <RootStack.Screen
+        name={'HomeStackScreens' }
+        component={ HomeStackScreens }
+        options={{headerShown: false}}
+      /> */}
     </RootStack.Navigator>
   );
 };

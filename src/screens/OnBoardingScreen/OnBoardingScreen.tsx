@@ -50,7 +50,7 @@ export default function OnBoardingScreen(): JSX.Element {
           });
           return nextIndex;
         });
-      }, 3000);
+      }, 4000);
 
       return () => clearInterval(interval);
     } else {
@@ -87,7 +87,7 @@ export default function OnBoardingScreen(): JSX.Element {
             height: 4,
             width: '30%',
             borderRadius: 2,
-            backgroundColor: currentIndex === index ? colors.primary : '#d3d3d3',
+            backgroundColor: currentIndex === index ? colors.primary1 : '#d3d3d3',
             marginHorizontal: pixelSizeX(2),
           }}
         />

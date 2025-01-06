@@ -56,7 +56,9 @@ export default function InputTextLabel(props: inputTextLabelType): JSX.Element {
 
   return (
     <View style={[styles.mainContStyle, viewStyle]}>
+      {/* {textLable && */}
       <AppText transText={textLable} presetStyle={'textInputHeading'} style={textLabelStyle} />
+      {/* } */}
 
       <View style={[styles.inputStyle2, textInputStyle]}>
         {leftIcon ? (
@@ -108,7 +110,7 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#ffffff'
   },
-  leftButtonStyle: {marginRight: 10},
+  leftButtonStyle: {marginRight: 5},
   mainContStyle: {
     alignSelf: 'center',
     marginTop: 15,

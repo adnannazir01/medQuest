@@ -3,6 +3,7 @@ import {en} from '../labels';
 import BottomTab from '../routes/BottomTab';
 import {
   ConfirmSignupScreen,
+  CustomizeStudyScreen,
   ForgotChangePassScreen,
   ForgotPasswordScreen,
   HomeScreen,
@@ -68,6 +69,11 @@ export const homeScreen = [
     id: 2,
     screenName: 'SettingScreen',
     component: SettingScreen,
+  },
+  {
+    id: 3,
+    screenName: 'CustomizeStudyScreen',
+    component: CustomizeStudyScreen,
   },
 ];
 

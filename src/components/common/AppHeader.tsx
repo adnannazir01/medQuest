@@ -1,11 +1,13 @@
-import React, {ReactElement} from 'react';
-import {StyleProp, StyleSheet, TextStyle, TouchableOpacityProps, View, ViewStyle} from 'react-native';
-import {TxKeyPath} from '../../i18n/types';
-import {IconTypes} from '../../assets/icons';
-import {CustomTheme, HEIGHT, SPACING} from '../../theme';
-import {useTheme} from '@react-navigation/native';
+import React, { ReactElement } from 'react';
+import { Image, StyleProp, StyleSheet, TextStyle, TouchableOpacity, TouchableOpacityProps, View, ViewStyle } from 'react-native';
+import { TxKeyPath } from '../../i18n/types';
+import { IconTypes } from '../../assets/icons';
+import { COLORS, CustomTheme, HEIGHT, SPACING, STYLES } from '../../theme';
+import { useNavigation, useTheme } from '@react-navigation/native';
 import AppText from './AppText';
 import AppIcon from './AppIcon';
+import { normalizeFont, normalizeHeight, normalizeWidth, pixelSizeX, pixelSizeY } from '../../theme/size';
+import { SVG } from '../../assets';
 
 export interface HeaderProps {
   /**
@@ -79,6 +81,11 @@ export interface HeaderProps {
    * What happens when you press the right icon or text action.
    */
   onRightPress?: TouchableOpacityProps['onPress'];
+
+  type?: string;
+  leftSVGIcon?: any
+  RightSVGIcon?: any
+  backBtn?:boolean
 }
 
 interface HeaderActionProps {
@@ -87,6 +94,7 @@ interface HeaderActionProps {
   iconColor?: string;
   onPress?: TouchableOpacityProps['onPress'];
   ActionComponent?: ReactElement;
+  SVGIcon?: any
 }
 
 /**
@@ -96,13 +104,13 @@ function HeaderAction(props: HeaderActionProps) {
   /*
    ** Destruturing props
    */
-  const {backgroundColor, icon, onPress, ActionComponent, iconColor} = props;
+  const { backgroundColor, icon, onPress, ActionComponent, iconColor, SVGIcon = null } = props;
   /*
    ** If we getting custome header action them we would return that componenet only
    */
   if (ActionComponent) return ActionComponent;
 
-  if (icon) {
+  if (icon || SVGIcon) {
     return (
       <AppIcon
         width={24}
@@ -110,12 +118,14 @@ function HeaderAction(props: HeaderActionProps) {
         icon={icon}
         color={iconColor}
         onPress={onPress}
-        containerStyle={[styles.actionIconContainer, {backgroundColor}]}
+        containerStyle={[styles.actionIconContainer, { backgroundColor }]}
+        SVGIcon={SVGIcon}
+        isPressable
       />
     );
   }
 
-  return <View style={[styles.actionFillerConatiner, {backgroundColor}]} />;
+  return <View style={[styles.actionFillerConatiner, { backgroundColor }]} />;
 }
 /**
  * Header that appears on many screens. Will hold navigation buttons and screen title.
@@ -142,11 +152,18 @@ export default function AppHeader(props: HeaderProps) {
     titleStyle,
     containerStyle,
     transTitle,
+    type = 'all',
+    profilePic = '',
+    initials = 'CF',
+    leftSVGIcon = null,
+    RightSVGIcon = null,
+    backBtn = false
   } = props;
   /*
    ** Hooks
    */
-  const {colors} = useTheme() as CustomTheme;
+  const { colors } = useTheme() as CustomTheme;
+  const navigation = useNavigation()
   /*
    ** Checking if we get title as prop
    */
@@ -156,15 +173,43 @@ export default function AppHeader(props: HeaderProps) {
    */
   const bgColor = backgroundColor || colors?.background;
 
+  if (type === 'home') {
+    return (
+      <View style={[STYLES.rowCenterBt, STYLES.mV(pixelSizeY(20))]}>
+        <View>
+          <AppText transText={'Hello 👋'} style={{ color: colors.greyShade, fontSize: normalizeFont(16), fontWeight: '400' }} />
+          <AppText transText={title} style={{ color: colors.Ebony, fontSize: normalizeFont(18), fontWeight: '400' }} />
+        </View>
+
+        <View style={STYLES.rowCenter}>
+          <TouchableOpacity activeOpacity={0.8}>
+            <SVG.NotificationIcon width={normalizeWidth(25)} height={normalizeHeight(25)} />
+          </TouchableOpacity>
+
+          <TouchableOpacity activeOpacity={0.8}>
+            {profilePic ? <Image source={profilePic} style={styles.profile} /> :
+              <View style={styles.imgCont}>
+                <AppText transText={initials} style={{ color: colors.darkBrown, fontSize: normalizeFont(18), fontWeight: '400' }} />
+              </View>}
+          </TouchableOpacity>
+
+        </View>
+      </View>
+    )
+  }
+
   return (
     <View style={[$container(bgColor), containerStyle]}>
       <View style={[styles.contentContainerStyle, style]}>
         <HeaderAction
           icon={leftIcon}
           iconColor={leftIconColor}
-          onPress={onLeftPress}
+          onPress={() => navigation.goBack()}
+          // onPress={backBtn? () => navigation.goBack() : onLeftPress}
           backgroundColor={backgroundColor}
           ActionComponent={LeftActionComponent}
+          SVGIcon={backBtn ? <SVG.BackArrowIcon width={25} height={25}  /> : leftSVGIcon}
+
         />
 
         {titleContent && (
@@ -180,14 +225,16 @@ export default function AppHeader(props: HeaderProps) {
             </AppText>
           </View>
         )}
-
-        <HeaderAction
-          icon={rightIcon}
-          iconColor={rightIconColor}
-          onPress={onRightPress}
-          backgroundColor={backgroundColor}
-          ActionComponent={RightActionComponent}
-        />
+        {rightIcon || RightSVGIcon &&
+          <HeaderAction
+            icon={rightIcon}
+            iconColor={rightIconColor}
+            onPress={onRightPress}
+            backgroundColor={backgroundColor}
+            ActionComponent={RightActionComponent}
+            SVGIcon={RightSVGIcon}
+          />
+        }
       </View>
     </View>
   );
@@ -240,4 +287,18 @@ const styles = StyleSheet.create({
   titleStyle: {
     textAlign: 'center',
   },
+  imgCont: {
+    width: normalizeWidth(40),
+    height: normalizeHeight(40),
+    backgroundColor: COLORS.peach,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: pixelSizeX(20)
+  },
+  profile: {
+    width: normalizeWidth(40),
+    height: normalizeHeight(40),
+    borderRadius: 20,
+  }
 });

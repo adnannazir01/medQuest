@@ -76,7 +76,27 @@ const en = {
   verificationTitle: 'Enter Your Verification Code',
   statistics: 'Statistics',
   myStudy: 'My Study',
-  explore: 'Explore'
+  explore: 'Explore',
+  homeHeading: 'Ready to begin? Start studying now!',
+  homeSubHeading: 'Explore topics, answer tailored questions, and track your growth every step',
+  homeTitle: 'Explore Our Top Rated Decks',
+  customizeStudy: 'Customize Study Plan',
+  category: 'Category',
+  history: 'Study History',
+  studyPlan: 'Name Your Study Plan',
+  planPlaceholder: 'eg. Future Roadmap',
+  startDate: 'Start Date',
+  endDate: 'End Date',
+  deadLine: 'Set DeadLine',
+  timeLimit: 'Time Limit',
+  limitPlaceholder: 'eg. 01:15',
+  addSession: 'Add sessions',
+  customizeCard: 'Customized your card limit',
+  selectedSession: 'Selected Session',
+  enterCard: 'Enter number of cards',
+  startStudy: 'Start Study',
+  selectStudy: 'Select Study Session',
+  
 
 };
 
